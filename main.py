@@ -354,12 +354,12 @@ def matchups():
         week_end=end_of_week.strftime('%B %d')
     )
 
-
+@app.route("/debug-db")
+def debug_db():
+    return f"Using: {app.config['SQLALCHEMY_DATABASE_URI']}"
 
 if __name__ == '__main__':
     port = int(os.environ.get("PORT", 5000))
     app.run(host='0.0.0.0', port=port)
 
-@app.route("/debug-db")
-def debug_db():
-    return f"Using: {app.config['SQLALCHEMY_DATABASE_URI']}"
+
