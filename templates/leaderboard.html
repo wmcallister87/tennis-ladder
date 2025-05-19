@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>RCSP Ladder</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="min-h-screen bg-cover bg-center bg-no-repeat" style="background-image: url('/static/court.jpg');">
+  <div class="flex flex-col lg:flex-row gap-8 w-full max-w-6xl px-4 py-8 mx-auto mt-20">
+    <!-- Leaderboard Panel -->
+    <div class="flex-1 bg-white bg-opacity-80 rounded shadow-lg p-6 h-full">
+      <div class="flex justify-between items-center mb-6">
+        <h1 class="text-3xl font-bold">RCSP Men's Singles Ladder</h1>
+        <div class="flex gap-4 items-center">
+          <a href="/matchups" class="text-blue-600 underline">Matchups</a>
+          <a href="/signup" class="text-green-700 underline text-sm">Signup</a>
+          <a href="/logout" class="text-blue-600 underline text-sm">Logout</a>
+      </div>
+    </div>
+      <table class="w-full table-auto bg-white rounded shadow overflow-hidden">
+        <thead class="bg-gray-200">
+          <tr>
+            <th class="text-left p-2">Rank</th>
+            <th class="text-left p-2">Player</th>
+            <th class="text-left p-2">Elo</th>
+            <th class="text-left p-2">Matches Played</th>
+            <th class="text-left p-2">Win %</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for row in leaderboard %}
+          <tr class="border-t">
+            <td class="p-2">{{ loop.index }}</td>
+            <td class="p-2">{{ row[0] }}</td>
+            <td class="p-2">{{ row[1] }}</td>
+            <td class="p-2">{{ row[2] }}</td>
+            <td class="p-2 font-semibold">
+              {{ (row[3] * 100) | round(1) }}%
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Match Submission Panel -->
+    <div class="w-full max-w-md bg-white bg-opacity-90 p-6 rounded shadow-lg min-h-[80vh]">
+      <h2 class="text-xl font-semibold mb-4">Submit a Match</h2>
+      <form action="/submit" method="POST" class="space-y-4">
+        <div class="space-y-2">
+          <label class="block font-medium">Players & Set Scores</label>
+
+          <div class="grid grid-cols-6 gap-2 text-center text-xs font-semibold text-gray-600">
+            <div class="col-span-2"></div>
+            <div>Set 1</div>
+            <div>Set 2</div>
+            <div>Set 3</div>
+          </div>
+
+          <div class="grid grid-cols-6 gap-2 items-center text-sm">
+            <select name="player1" required class="col-span-2 p-2 border rounded">
+              <option value="">Player 1</option>
+              {% for name in names %}
+              <option value="{{ name }}">{{ name }}</option>
+              {% endfor %}
+            </select>
+            <input name="set1_p1" type="number" placeholder="Games" class="p-2 border rounded text-xs w-20 h-8" />
+            <input name="set2_p1" type="number" placeholder="Games" class="p-2 border rounded text-xs w-20 h-8" />
+            <input name="set3_p1" type="number" placeholder="Games" class="p-2 border rounded text-xs w-20 h-8" />
+          </div>
+          <div class="grid grid-cols-6 gap-2 items-center text-sm">
+            <select name="player2" required class="col-span-2 p-2 border rounded">
+              <option value="">Player 2</option>
+              {% for name in names %}
+              <option value="{{ name }}">{{ name }}</option>
+              {% endfor %}
+            </select>
+            <input name="set1_p2" type="number" placeholder="Games" class="p-2 border rounded text-xs w-20 h-8" />
+            <input name="set2_p2" type="number" placeholder="Games" class="p-2 border rounded text-xs w-20 h-8" />
+            <input name="set3_p2" type="number" placeholder="Games" class="p-2 border rounded text-xs w-20 h-8" />
+          </div>
+        </div>
+        <div>
+          <label for="date" class="block text-sm font-medium text-gray-700">Match Date</label>
+          <input name="date" type="date" required class="w-full p-2 border rounded" />
+        </div>
+        <button type="submit" class="bg-blue-600 text-white py-2 px-4 rounded hover:bg-blue-700 w-full">
+          Submit Match
+        </button>
+      </form>
+
+      <div class="mt-6">
+        <h3 class="text-lg font-semibold mb-2">Recent Matches</h3>
+        <ul class="space-y-2 text-sm">
+          {% set sorted_matches = recent_matches | sort(attribute='date', reverse=True) %}
+          {% for match in sorted_matches[:3] %}
+          <li class="bg-white bg-opacity-70 p-2 rounded shadow-sm">
+            <div class="text-sm">
+              <span class="text-green-600 font-semibold">{{ match.winner }}</span>
+              defeated
+              <span class="text-red-600 font-semibold">{{ match.loser }}</span>
+              on {{ match.date.strftime('%m/%d/%Y') }}
+            </div>
+            <div class="mt-2 grid grid-cols-2 gap-1 text-xs items-center">
+              <div class="text-center font-semibold text-green-600">{{ match.winner }}</div>
+              <div class="flex space-x-1">
+                {% for score in [match.set1_w, match.set2_w, match.set3_w] if score is not none %}
+                <div class="bg-gray-200 w-6 h-5 flex items-center justify-center rounded text-[10px]">{{ score }}</div>
+                {% endfor %}
+              </div>
+              <div class="text-center font-semibold text-red-600">{{ match.loser }}</div>
+              <div class="flex space-x-1">
+                {% for score in [match.set1_l, match.set2_l, match.set3_l] if score is not none %}
+                <div class="bg-gray-200 w-6 h-5 flex items-center justify-center rounded text-[10px]">{{ score }}</div>
+                {% endfor %}
+              </div>
+            </div>
+          </li>
+          {% endfor %}
+        </ul>
+      </div>
+
+      <div class="mt-4 text-center">
+        <a href="/admin" class="text-blue-600 underline text-sm">Admin</a>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

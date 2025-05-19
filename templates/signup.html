@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Weekly Signup - RCSP Ladder</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="min-h-screen bg-cover bg-center bg-no-repeat" style="background-image: url('/static/court.jpg');">
+  <div class="max-w-2xl mx-auto mt-20 bg-white bg-opacity-90 p-6 rounded shadow-lg">
+    <div class="mb-6 text-center">
+      <h1 class="text-2xl font-bold">Weekly Ladder Participation</h1>
+      <p class="text-sm text-gray-700 mt-1">Will you be playing in the <span class="font-semibold">{{ week_range }} ladder</span>?</p>
+    </div>
+
+    <form action="/signup" method="POST" class="space-y-4">
+      <div>
+        <label for="player" class="block text-sm font-medium text-gray-700">Select Your Name</label>
+        <select name="player" required class="mt-1 w-full p-2 border rounded">
+          <option value="">-- Choose Player --</option>
+          {% for name in names %}
+          <option value="{{ name }}">{{ name }}</option>
+          {% endfor %}
+        </select>
+      </div>
+
+      <div class="flex gap-4 justify-center">
+        <button name="response" value="yes" type="submit" class="bg-green-600 text-white px-6 py-2 rounded hover:bg-green-700">
+          Yes
+        </button>
+        <button name="response" value="no" type="submit" class="bg-red-600 text-white px-6 py-2 rounded hover:bg-red-700">
+          No
+        </button>
+      </div>
+    </form>
+
+    <div class="mt-8">
+      <h2 class="text-lg font-semibold mb-2">Responses So Far</h2>
+      <ul class="space-y-2 text-sm">
+        {% for entry in responses %}
+        <li class="flex justify-between items-center border-b pb-1">
+          <div>
+            <span class="font-medium">{{ entry.player }}</span>
+            <span class="{% if entry.response == 'yes' %}text-green-600{% else %}text-red-600{% endif %} font-semibold ml-2">
+              {{ entry.response | capitalize }}
+            </span>
+          </div>
+          <form method="POST" action="/remove-signup">
+            <input type="hidden" name="response_id" value="{{ entry.id }}">
+            <button type="submit" class="text-red-500 hover:text-red-700 text-xs underline ml-4">Remove</button>
+          </form>
+        </li>
+        {% endfor %}
+      </ul>
+    </div>
+
+    <div class="mt-8 text-center">
+      <a href="/" class="text-blue-600 underline text-sm">Back to Leaderboard</a>
+    </div>
+  </div>
+</body>
+</html>

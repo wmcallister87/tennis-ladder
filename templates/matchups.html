@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Weekly Matchups - RCSP Ladder</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="min-h-screen bg-cover bg-center bg-no-repeat" style="background-image: url('/static/court.jpg');">
+  <div class="max-w-3xl mx-auto mt-20 bg-white bg-opacity-90 p-6 rounded shadow-md">
+    <div class="mb-6 text-center">
+      <h1 class="text-2xl font-bold">Weekly Matchups</h1>
+      <p class="text-sm text-gray-700 mt-1">Matchups for the week of <span class="font-semibold">{{ week_start }}</span> to <span class="font-semibold">{{ week_end }}</span></p>
+    </div>
+
+    {% if sit_out %}
+    <div class="bg-yellow-100 text-yellow-800 px-4 py-2 rounded mb-6 text-center font-semibold">
+      {{ sit_out }} was the last player to sign up and will sit out this week due to an odd number of players.
+    </div>
+    {% endif %}
+
+    <div class="space-y-4">
+      {% for p1, p2 in matchups %}
+      <div class="bg-gray-100 rounded p-4 flex justify-between shadow">
+        <span class="font-semibold text-gray-700">{{ p1 }}</span>
+        <span class="text-gray-500">vs</span>
+        <span class="font-semibold text-gray-700">{{ p2 }}</span>
+      </div>
+      {% endfor %}
+    </div>
+
+    <div class="mt-8 text-center">
+      <a href="/" class="text-blue-600 underline text-sm">Back to Leaderboard</a>
+    </div>
+  </div>
+</body>
+</html>

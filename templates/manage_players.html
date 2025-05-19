@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Manage Players - RCSP Ladder</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="min-h-screen bg-cover bg-center bg-no-repeat" style="background-image: url('/static/court.jpg');">
+  <div class="max-w-5xl mx-auto mt-20 bg-white bg-opacity-80 p-6 rounded shadow-md">
+    <div class="flex justify-between items-center mb-6">
+      <h1 class="text-2xl font-bold">Manage Players</h1>
+      <a href="/admin" class="text-sm text-blue-600 underline">Back to Admin HQ</a>
+    </div>
+
+    <!-- Add New Player -->
+    <form action="/manage-players" method="POST" class="bg-white bg-opacity-90 mb-4 p-4 rounded shadow space-y-2">
+      <h2 class="text-lg font-semibold">Add New Player</h2>
+      <input type="hidden" name="action" value="add" />
+      <div class="grid grid-cols-4 gap-4">
+        <input type="text" name="name" placeholder="Name" class="p-2 border rounded" required />
+        <input type="email" name="email" placeholder="Email" class="p-2 border rounded" required />
+        <input type="text" name="phone" placeholder="Phone (e.g. 5551234567)" class="p-2 border rounded" required />
+        <button type="submit" class="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 w-full">
+          Add
+        </button>
+      </div>
+    </form>
+
+    <!-- Headers -->
+    <div class="grid grid-cols-4 gap-4 font-semibold mb-2 px-2">
+      <div>Name</div>
+      <div>Email</div>
+      <div>Phone</div>
+      <div class="text-right">Actions</div>
+    </div>
+
+    <!-- Scrollable Player List -->
+<div class="max-h-[500px] overflow-y-auto rounded">
+  {% for player in players|sort(attribute='name', case_sensitive=False) %}
+  <form action="/manage-players" method="POST"
+        class="grid grid-cols-4 gap-4 items-center p-2 rounded {{ loop.index % 2 == 0 and 'bg-gray-100 bg-opacity-80' or 'bg-white bg-opacity-90' }}">
+    <input type="hidden" name="player_id" value="{{ player.id }}" />
+    <input type="text" name="name" value="{{ player.name }}" class="p-2 border rounded" required />
+    <input type="email" name="email" value="{{ player.email }}" class="p-2 border rounded" required />
+    <input type="text" name="phone" value="{{ player.phone }}" class="p-2 border rounded" required />
+    <div class="flex gap-2 justify-end">
+      <button type="submit" name="action" value="update" class="bg-blue-600 text-white px-3 py-1 rounded hover:bg-blue-700">
+        Update
+      </button>
+      <button type="submit" name="action" value="delete" class="bg-red-600 text-white px-3 py-1 rounded hover:bg-red-700">
+        Delete
+      </button>
+    </div>
+  </form>
+  {% endfor %}
+</div>
+
+</body>
+</html>
