@@ -13,7 +13,7 @@ print(">>> Running correct main.py")
 app = Flask(__name__)
 app.secret_key = "your-secret-key"  # Replace this for production
 
-app.config["SQLALCHEMY_DATABASE_URI"] = os.environ.get("DATABASE_URL")
+app.config["SQLALCHEMY_DATABASE_URI"] = os.environ.get("DATABASE_URL") + "?sslmode=require"
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 
 db.init_app(app)
@@ -231,6 +231,8 @@ def remove_signup():
 
 @app.route("/signup", methods=["GET", "POST"])
 def signup():
+    if not session.get("logged_in"):
+        return redirect("/login")
     from datetime import datetime, timedelta
 
     # Calculate upcoming Monday to Sunday date range
