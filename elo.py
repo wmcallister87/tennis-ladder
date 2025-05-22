@@ -48,7 +48,16 @@ def calculate_elo():
         loser_elo = players[loser]["elo"]
         expected_win = expected_score(winner_elo, loser_elo)
 
-        k = ACCEL_K if players[winner]["matches"] < 3 else BASE_K
+        # Calculate league average Elo (once before the loop or inside if needed)
+        league_avg = sum(p["elo"] for p in players.values()) / len(players)
+
+        # Determine K-factor
+        if players[winner]["matches"] < 3 and loser_elo >= league_avg:
+            k = ACCEL_K
+        else:
+            k = BASE_K
+
+        # Apply upset multiplier only if winner is rated lower
         if winner_elo < loser_elo:
             k *= UPSET_MULTIPLIER
 
