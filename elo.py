@@ -4,7 +4,7 @@ import math
 from datetime import datetime
 
 BASE_K = 32
-ACCEL_K = 48
+ACCEL_K = 40
 UPSET_MULTIPLIER = 1.2
 CONFIDENCE_MATCH_CAP = 2
 RECENCY_LAMBDA = 0.05
