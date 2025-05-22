@@ -4,8 +4,8 @@ import math
 from datetime import datetime
 
 BASE_K = 32
-ACCEL_K = 44
-UPSET_MULTIPLIER = 1.2
+ACCEL_K = 42
+UPSET_MULTIPLIER = 1.15
 CONFIDENCE_MATCH_CAP = 3
 RECENCY_LAMBDA = 0.05
 DECAY_RATE = 0.5
@@ -48,16 +48,7 @@ def calculate_elo():
         loser_elo = players[loser]["elo"]
         expected_win = expected_score(winner_elo, loser_elo)
 
-        # Calculate league average Elo (once before the loop or inside if needed)
-        league_avg = sum(p["elo"] for p in players.values()) / len(players)
-
-        # Determine K-factor
-        if players[winner]["matches"] < 3 and loser_elo >= league_avg:
-            k = ACCEL_K
-        else:
-            k = BASE_K
-
-        # Apply upset multiplier only if winner is rated lower
+        k = ACCEL_K if players[winner]["matches"] < 3 else BASE_K
         if winner_elo < loser_elo:
             k *= UPSET_MULTIPLIER
 
